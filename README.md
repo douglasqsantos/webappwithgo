@@ -1,2 +1,1 @@
-# webappwithgo
-Web App with Go
+# Web App with Go
