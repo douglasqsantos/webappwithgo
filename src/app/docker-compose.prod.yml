@@ -1,0 +1,60 @@
+# # docker compose -f docker-compose.prod.yml up -d --build --remove-orphans
+# version: "3"
+
+# networks:
+#   web:
+#     external: true
+#     name: web
+#   internal:
+#     external: false
+#     name: internal
+
+# services:
+#   movies-api:
+#     container_name: movies-api
+#     # image: movies-api
+#     build:
+#       dockerfile: Dockerfile.prod
+#       context: .
+#     labels:
+#       - traefik.http.routers.movies-api.rule=Host(`api.dqs.local`)
+#       - traefik.http.routers.movies-api.tls=false
+#       # - traefik.http.routers.movies-api.tls.certresolver=lets-encrypt
+#       - traefik.port=4000 # backend port the app is listening
+#     ports:
+#       - "4000:${GO_API_PORT}"
+#     environment:
+#       GO_API_PORT: "${GO_API_PORT}"
+#       GO_MOVIES_JWT: "${GO_MOVIES_JWT}"
+#       GO_DB_USERNAME: "${GO_DB_USERNAME}"
+#       GO_DB_PASSWORD: "${GO_DB_PASSWORD}"
+#       GO_DB_ADDRESS: "${GO_DB_ADDRESS}"
+#       GO_DB_NAME: "${GO_DB_NAME}"
+#       GO_DB_OPTIONS: "${GO_DB_OPTIONS}"
+#     restart: always
+#     networks:
+#       - internal
+#       - web
+#     depends_on:
+#       - postgres
+#   postgres:
+#     container_name: postgres
+#     # image: backend_postgres
+#     build:
+#       dockerfile: Dockerfile.prod
+#       context: ./postgresql
+#     restart: always
+#     networks:
+#       - internal
+#     labels:
+#       - traefik.enable=false
+#     ports:
+#       - "5432:5432"
+#     healthcheck:
+#       test: pg_isready -h 127.0.0.1
+#     environment:
+#       POSTGRES_USER: "${GO_DB_USERNAME}"
+#       POSTGRES_PASSWORD: "${GO_DB_PASSWORD}"
+#       POSTGRES_DB: "${GO_DB_NAME}"
+# ## Needs to configure the api to wait until the database be available to be handle until can enable the user to use it, otherwise the app will be not able to work and we get the following error message
+# ## traefik   | time="2021-09-04T23:26:59Z" level=error msg="service \"blog-backend\" error: unable to find the IP address for the container \"/backend_blog_1\": the server is ignored" providerName=docker container=blog-backend-ccbd5432f80049b24f1a0aba156fc9cd495257c0fef232a166993e9f83513ce3

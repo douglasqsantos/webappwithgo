@@ -1,0 +1,39 @@
+# docker-compose -f docker-compose.yml up -d --build --remove-orphans
+version: "3.9"
+services:
+  web-app:
+    container_name: web-app
+    build:
+      dockerfile: Dockerfile
+      context: .
+      target: dev
+    restart: always
+    # depends_on:
+    #   - postgres
+    ports:
+      - "8080:${GO_WEB_PORT}"
+    volumes:
+      - .:/opt/app/web
+    # environment:
+    #   GO_API_PORT: "${GO_API_PORT}"
+    #   GO_MOVIES_JWT: "${GO_MOVIES_JWT}"
+    #   GO_DB_USERNAME: "${GO_DB_USERNAME}"
+    #   GO_DB_PASSWORD: "${GO_DB_PASSWORD}"
+    #   GO_DB_ADDRESS: "${GO_DB_ADDRESS}"
+    #   GO_DB_NAME: "${GO_DB_NAME}"
+    #   GO_DB_OPTIONS: "${GO_DB_OPTIONS}"
+  # postgres:
+  #   container_name: postgres
+  #   image: postgres:12-alpine
+  #   restart: always
+  #   ports:
+  #     - "5432:5432"
+  #   volumes:
+  #     - ${PG_DATA}:/var/lib/postgresql/data
+  #     - ${PG_INITIAL_DATA}:/docker-entrypoint-initdb.d/db.sql
+  #   healthcheck:
+  #     test: pg_isready -h 127.0.0.1
+  #   environment:
+  #     POSTGRES_USER: "${GO_DB_USERNAME}"
+  #     POSTGRES_PASSWORD: "${GO_DB_PASSWORD}"
+  #     POSTGRES_DB: "${GO_DB_NAME}"
